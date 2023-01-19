@@ -39,7 +39,7 @@ public class finishScript : MonoBehaviour
             StatusEndGame.transform.localScale = new Vector3(1, 1, 1);
             StatusHeader = GameObject.Find("StatusHeader").GetComponent<Text>();
             StatusText = GameObject.Find("StatusText").GetComponent<Text>();
-            StatusHeader.text = "You Won!";
+            StatusHeader.text = "GOOD JOB!";
 
             StatusText.text = "You've removed all the trash from this town!";
         }
