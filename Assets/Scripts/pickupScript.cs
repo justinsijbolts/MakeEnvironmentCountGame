@@ -6,7 +6,7 @@ public class pickupScript : MonoBehaviour
 {
     public float pickupsPicked;
     GameObject PickupBar;
-    private float maxPickups;
+    public float maxPickups;
     bool pickupsCounted;
 
     void Start() {
