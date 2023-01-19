@@ -1,93 +1,87 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class characterControllerScr : MonoBehaviour
-{
+public class characterControllerScr : MonoBehaviour {
+    [Header("Camera")]
+    public Transform cam;
+    public bool lockCursor;
 
-    // Public values
-    public float jumpHeight;
-    public float speed;
-    public float cameraSensitivity;
+    [Range(0.1f, 10)] public float lookSensitivity;
 
+    public float maxUpRotation;
+    public float maxDownRotation;
 
-    // Private values
-    private float usedSpeed;
+    private float xRotation = 0;
 
+    [Header("Movement")]
+    public CharacterController controller;
 
-    void Start()
-    {
-        // Lock the cursor
-        Cursor.lockState = CursorLockMode.Locked;
-        usedSpeed = speed;
+    // Speed of forwards and backwards movement
+    [Range(0.5f, 20)] public float walkSpeed;
+
+    // Speed of sideways (left and right) movement
+    [Range(0.5f, 15)] public float strafeSpeed;
+
+    private KeyCode sprintKey;
+
+    // How many times faster movement along the X and Z axes
+    // is when sprinting
+    [Range(1, 3)] public float sprintFactor;
+
+    [Range(0.5f, 10)] public float jumpHeight;
+    public int maxJumps;
+
+    private Vector3 velocity = Vector3.zero;
+    private int jumpsSinceLastLand = 0;
+
+    void Start() {
+        if(lockCursor) {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
+        sprintKey = KeyCode.LeftShift;
     }
 
-    void cameraMovement()
-    {
-        float mouseX = Input.GetAxis("Mouse X");
-        transform.Rotate(0, mouseX * cameraSensitivity, 0);
+    void Update() {
+        transform.Rotate(0, Input.GetAxis("Mouse X") * lookSensitivity, 0);
+        xRotation -= Input.GetAxis("Mouse Y") * lookSensitivity;
+        xRotation = Mathf.Clamp(xRotation, -maxUpRotation, maxDownRotation);
+        cam.localRotation = Quaternion.Euler(xRotation, 0, 0);
 
-        float mouseY = Input.GetAxis("Mouse Y");
-        Camera.main.transform.Rotate(-mouseY * cameraSensitivity, 0, 0);
+        velocity.z = Input.GetAxis("Vertical") * walkSpeed;
+        velocity.x = Input.GetAxis("Horizontal") * strafeSpeed;
+        velocity = transform.TransformDirection(velocity);
 
-        // camera rotation Z should always be 0
-        Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.rotation.eulerAngles.x, Camera.main.transform.rotation.eulerAngles.y, 0);
+        if(Input.GetKey(sprintKey)) { Sprint(); }
+
+        // Apply manual gravity
+        velocity.y += Physics.gravity.y * Time.deltaTime;
+
+        if(controller.isGrounded && velocity.y < 0) { Land(); }
+
+        if(Input.GetButton("Jump")) {
+            if(controller.isGrounded) {
+                Jump();
+            } else if(jumpsSinceLastLand < maxJumps) {
+                Jump();
+            }
+        }
+
+        controller.Move(velocity * Time.deltaTime);
     }
 
-    /*
-            float mouseX = Input.GetAxis("Mouse X");
-        transform.Rotate(0, mouseX * cameraSensitivity, 0);
-        float mouseY = Input.GetAxis("Mouse Y");
-        float currentCameraRotationX = Camera.main.transform.localEulerAngles.x;
-    
-        if (currentCameraRotationX > 270 || currentCameraRotationX < 90)
-        {
-            Camera.main.transform.Rotate(-mouseY * cameraSensitivity, 0, 0);
-        }
-    */
-
-    void playerMovement()
-    {
-        if (Input.GetKey(KeyCode.W))
-        {
-            transform.Translate(0, 0, usedSpeed * Time.deltaTime);
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            transform.Translate(0, 0, -usedSpeed * Time.deltaTime);
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.Translate(-usedSpeed * Time.deltaTime, 0, 0);
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.Translate(usedSpeed * Time.deltaTime, 0, 0);
-        }
-        if (Input.GetKey(KeyCode.LeftShift)) {
-            usedSpeed = speed * 2;
-        } else {
-            usedSpeed = speed;
-        }
-
-        if (Input.GetKey(KeyCode.Space) && GetComponent<Rigidbody>().velocity.y == 0)
-        {
-            GetComponent<Rigidbody>().AddForce(Vector3.up * jumpHeight, ForceMode.Impulse); 
-            GetComponent<Rigidbody>().useGravity = true;
-            GetComponent<Rigidbody>().isKinematic = false;
-        }
-
-        // log the velocity y value
-        Debug.Log(GetComponent<Rigidbody>().velocity.y);
+    private void Sprint() {
+        velocity.z *= sprintFactor;
+        velocity.x *= sprintFactor;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        cameraMovement();
+    private void Jump() {
+        velocity.y = Mathf.Sqrt(jumpHeight * -2 * Physics.gravity.y);
+        jumpsSinceLastLand++;
     }
 
-    void FixedUpdate() {
-        playerMovement();
+    private void Land() {
+        velocity.y = 0;
+        jumpsSinceLastLand = 0;
     }
 }

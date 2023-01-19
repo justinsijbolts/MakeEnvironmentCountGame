@@ -17,12 +17,12 @@ public class mainWaterScript : MonoBehaviour
 
     void CharControllerSpeed()
     {
-        if(characterControllerScr.speed > 3 && currentlyInWater) {
-            characterControllerScr.speed -= 0.2f * Time.deltaTime;
+        if(characterControllerScr.walkSpeed > 3 && currentlyInWater) {
+            characterControllerScr.walkSpeed -= 0.2f * Time.deltaTime;
         }
 
-        if(characterControllerScr.speed < 10 && !currentlyInWater) {
-            characterControllerScr.speed += 1f * Time.deltaTime;
+        if(characterControllerScr.walkSpeed < 10 && !currentlyInWater) {
+            characterControllerScr.walkSpeed += 1f * Time.deltaTime;
         }
     }
 
