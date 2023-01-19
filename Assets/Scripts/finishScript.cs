@@ -16,6 +16,7 @@ public class finishScript : MonoBehaviour
 
     Text StatusHeader;
     Text StatusText;
+    Button RestartButton;
     void Start()
     {
         pickupScript = GameObject.Find("playerCapsule").GetComponent<pickupScript>();
@@ -42,6 +43,14 @@ public class finishScript : MonoBehaviour
             StatusHeader.text = "GOOD JOB!";
 
             StatusText.text = "You've removed all the trash from this town!";
+
+            RestartButton = GameObject.Find("RestartBtn").GetComponent<Button>();
+            RestartButton.onClick.AddListener(RestartGame);
         }
+    }
+
+    void RestartGame()
+    {
+        Application.LoadLevel(Application.loadedLevel);
     }
 }
