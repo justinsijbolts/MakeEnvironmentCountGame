@@ -5,29 +5,43 @@ using UnityEngine;
 public class mainWaterScript : MonoBehaviour
 {
     characterControllerScr characterControllerScr;
-    bool hasReachedWater;
+    GameObject playerCapsule;
+    bool currentlyInWater = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        characterControllerScr = GameObject.Find("playerCapsule").GetComponent<characterControllerScr>();
+        playerCapsule = GameObject.Find("playerCapsule");
+        characterControllerScr = playerCapsule.GetComponent<characterControllerScr>();
+    }
+
+    void CharControllerSpeed()
+    {
+        if(characterControllerScr.speed > 3 && currentlyInWater) {
+            characterControllerScr.speed -= 0.2f * Time.deltaTime;
+        }
+
+        if(characterControllerScr.speed < 10 && !currentlyInWater) {
+            characterControllerScr.speed += 1f * Time.deltaTime;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Handles water movement
         transform.Translate(0, 0.05f * Time.deltaTime, 0);
-        
-        if (transform.position.y > -101.07f && !hasReachedWater)
-        {
-            characterControllerScr.speed -= 1f;
-            Debug.Log("Water has reached level surface");
-            hasReachedWater = true;
-        }
 
-        if (transform.position.y > -101.5f && characterControllerScr.speed > 0)
-        {
-            characterControllerScr.speed -= 0.5f * Time.deltaTime;
-        }
+        CharControllerSpeed();
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        currentlyInWater = true;
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        currentlyInWater = false;
     }
 }
