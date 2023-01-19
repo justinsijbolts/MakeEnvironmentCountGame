@@ -795,6 +795,7 @@ GameObject:
   - component: {fileID: 1435392310}
   - component: {fileID: 1435392309}
   - component: {fileID: 1435392308}
+  - component: {fileID: 1435392311}
   m_Layer: 0
   m_Name: Pickup1
   m_TagString: Collectable
@@ -880,6 +881,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1435392306}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1435392311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1435392306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 643370130d186084c8ff66c98cb2e557, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  amplitude: 0.5
+  frequency: 0.5
 --- !u!1 &1881896006
 GameObject:
   m_ObjectHideFlags: 0
