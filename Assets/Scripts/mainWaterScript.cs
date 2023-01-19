@@ -30,7 +30,7 @@ public class mainWaterScript : MonoBehaviour
     void Update()
     {
         // Handles water movement
-        transform.Translate(0, 0.05f * Time.deltaTime, 0);
+        transform.Translate(0, 0.25f * Time.deltaTime, 0);
 
         CharControllerSpeed();
     }

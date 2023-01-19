@@ -10,7 +10,7 @@ public class finishScript : MonoBehaviour
     // Start is called before the first frame update
     pickupScript pickupScript;
     bool playerWon;
-    bool playerLost;
+    public bool playerLost;
 
     GameObject StatusEndGame;
 
@@ -43,6 +43,21 @@ public class finishScript : MonoBehaviour
             StatusHeader.text = "GOOD JOB!";
 
             StatusText.text = "You've removed all the trash from this town!";
+
+            RestartButton = GameObject.Find("RestartBtn").GetComponent<Button>();
+            RestartButton.onClick.AddListener(RestartGame);
+        }
+
+        if (playerLost && StatusEndGame.transform.localScale != new Vector3(1,1,1)) {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            StatusEndGame.transform.localScale = new Vector3(1, 1, 1);
+            StatusHeader = GameObject.Find("StatusHeader").GetComponent<Text>();
+            StatusText = GameObject.Find("StatusText").GetComponent<Text>();
+            StatusHeader.text = "GAME OVER";
+
+            StatusText.text = "You've run out of oxygen! The world has been destroyed :(";
 
             RestartButton = GameObject.Find("RestartBtn").GetComponent<Button>();
             RestartButton.onClick.AddListener(RestartGame);
